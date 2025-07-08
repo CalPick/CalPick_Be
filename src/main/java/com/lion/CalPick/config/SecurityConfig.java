@@ -3,30 +3,33 @@ package com.lion.CalPick.config;
 import com.lion.CalPick.repository.UserRepository;
 import com.lion.CalPick.service.CustomUserDetailsService;
 import com.lion.CalPick.util.JwtTokenProvider;
+import org.springframework.web.cors.CorsUtils;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserRepository userRepository;
     private final JwtAuthenticationEntryPoint unauthorizedHandler;
     private final CustomUserDetailsService customUserDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
 
     public SecurityConfig(UserRepository userRepository, JwtAuthenticationEntryPoint unauthorizedHandler, CustomUserDetailsService customUserDetailsService, JwtTokenProvider jwtTokenProvider) {
-        this.userRepository = userRepository;
         this.unauthorizedHandler = unauthorizedHandler;
         this.customUserDetailsService = customUserDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
