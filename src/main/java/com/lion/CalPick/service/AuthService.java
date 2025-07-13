@@ -35,11 +35,13 @@ public class AuthService {
         if (userRepository.existsByUserId(signupRequest.getUserId())) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
-
+        System.out.println(">> 생년월일 birthday-service: " + signupRequest.getBirth());
         User user = new User();
         user.setUserId(signupRequest.getUserId());
         user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         user.setNickname(signupRequest.getNickname());
+        user.setBirth(signupRequest.getBirth());
+        System.out.println(">> 생년월일 birthday-service2: " + user.getBirth());
 
         userRepository.save(user);
     }

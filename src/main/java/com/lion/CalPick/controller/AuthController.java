@@ -21,6 +21,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignUpRequest signupRequest) {
         try {
+            System.out.println(">> 생년월일 birthday: " + signupRequest.getBirth());
             authService.signup(signupRequest);
             return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("회원가입 성공"));
         } catch (IllegalArgumentException e) {

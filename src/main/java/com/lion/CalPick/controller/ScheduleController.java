@@ -10,11 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schedules")
+@RequestMapping("/api/schedules/monthly")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -27,10 +28,10 @@ public class ScheduleController {
     public ResponseEntity<List<ScheduleResponseDto>> getSchedules(
             @AuthenticationPrincipal UserPrincipal currentUser,
             @RequestParam(name = "userId", required = false) String targetUserId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate
+            @RequestParam(name = "year", required = false) int year,
+            @RequestParam(name = "month", required = false) int month
     ) {
-        List<ScheduleResponseDto> schedules = scheduleService.getSchedules(currentUser, targetUserId, startDate, endDate);
+        List<ScheduleResponseDto> schedules = scheduleService.getSchedules(currentUser, targetUserId, year, month);
         return ResponseEntity.ok(schedules);
     }
 
