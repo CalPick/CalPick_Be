@@ -34,14 +34,23 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> getSchedules(UserPrincipal currentUserPrincipal, String userId, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<ScheduleResponseDto> getSchedules(UserPrincipal currentUserPrincipal, String userId, int year, int month) {
         logger.info("getSchedules called. Current User ID: {}, Requested User ID: {}", currentUserPrincipal.getId(), userId);
+
+        // 해당year의 해당month의 시작일(1일0시0분)과 끝일(30일/31일 12시 59분)을 정의.
+        // 이유는 조회할 일정이 해당 월에 포함되어있는지를 쿼리문으로 계산하기 위함..
+        LocalDateTime monthStart = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime monthEnd = monthStart
+                .withDayOfMonth(monthStart.toLocalDate().lengthOfMonth())
+                .withHour(23).withMinute(59);
 
         User currentUser = userService.findById(currentUserPrincipal.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Current user not found"));
 
         User targetUser;
-        if (userId == null || currentUser.getUserId().equals(userId)) {
+        logger.info("Target user is current user nickname: {}", currentUser.getNickname());
+        logger.info("Target user is current user Id: {}", currentUser.getUserId());
+        if (currentUser.getUserId().equals(userId)) {
             // userId 생략 시 또는 본인 userId 입력 시 본인 일정 조회
             targetUser = currentUser;
             logger.info("Target user is current user: {}", targetUser.getUserId());
@@ -58,7 +67,7 @@ public class ScheduleService {
             logger.info("Target user is a friend. User ID: {}", targetUser.getUserId());
         }
 
-        List<Schedule> schedules = scheduleRepository.findByUserAndStartTimeBetween(targetUser, startDate, endDate);
+        List<Schedule> schedules = scheduleRepository.findOverlappingSchedules(targetUser, monthStart, monthEnd);
         return schedules.stream()
                 .map(ScheduleResponseDto::new)
                 .collect(Collectors.toList());
