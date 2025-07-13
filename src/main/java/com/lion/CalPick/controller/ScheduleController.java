@@ -4,14 +4,11 @@ import com.lion.CalPick.domain.UserPrincipal;
 import com.lion.CalPick.dto.ScheduleRequestDto;
 import com.lion.CalPick.dto.ScheduleResponseDto;
 import com.lion.CalPick.service.ScheduleService;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
