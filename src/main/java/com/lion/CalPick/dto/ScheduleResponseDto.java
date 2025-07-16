@@ -17,6 +17,7 @@ public class ScheduleResponseDto {
     private boolean isRepeating;
     private String userId;
     private String nickname;
+    private String color;
 
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
@@ -27,5 +28,6 @@ public class ScheduleResponseDto {
         this.isRepeating = schedule.isRepeating();
         this.userId = schedule.getUser().getUserId();
         this.nickname = schedule.getUser().getNickname();
+        this.color = schedule.getColor();
     }
 }

@@ -85,10 +85,54 @@ public class ScheduleService {
         schedule.setEndTime(requestDto.getEndTime());
         schedule.setRepeating(requestDto.isRepeating());
         schedule.setUser(owner);
+        schedule.setColor(requestDto.getColor());
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(savedSchedule);
     }
+
+    @Transactional
+    public ScheduleResponseDto updateSchedule(UserPrincipal currentUserPrincipal, Long scheduleId, ScheduleRequestDto requestDto) {
+        Schedule updatedSchedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        User owner = userService.findById(currentUserPrincipal.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 수정 권한 확인
+        if (!updatedSchedule.getUser().getId().equals(owner.getId())) {
+            throw new IllegalArgumentException("수정 권한이 없습니다.");
+        }
+
+        updatedSchedule.setTitle(requestDto.getTitle());
+        updatedSchedule.setDescription(requestDto.getDescription());
+        updatedSchedule.setStartTime(requestDto.getStartTime());
+        updatedSchedule.setEndTime(requestDto.getEndTime());
+        updatedSchedule.setRepeating(requestDto.isRepeating());
+        updatedSchedule.setColor(requestDto.getColor());
+
+
+        Schedule savedSchedule = scheduleRepository.save(updatedSchedule);
+        return new ScheduleResponseDto(savedSchedule);
+    }
+
+    @Transactional
+    public ScheduleResponseDto deleteSchedule(UserPrincipal currentUserPrincipal, Long scheduleId) {
+        Schedule deletedSchedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        User owner = userService.findById(currentUserPrincipal.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // 수정 권한 확인
+        if (!deletedSchedule.getUser().getId().equals(owner.getId())) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+        ScheduleResponseDto deletedScheduleDto = new ScheduleResponseDto(deletedSchedule);
+        scheduleRepository.deleteById(scheduleId);
+        return deletedScheduleDto; // 삭제된 데이터 정보 반환
+    }
+
 
     // For testing purposes or initial data setup
     @Transactional

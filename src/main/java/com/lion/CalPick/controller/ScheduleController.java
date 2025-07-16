@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schedules/monthly")
+@RequestMapping("/api/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -24,7 +24,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @GetMapping
+    @GetMapping("/monthly")
     public ResponseEntity<List<ScheduleResponseDto>> getSchedules(
             @AuthenticationPrincipal UserPrincipal currentUser,
             @RequestParam(name = "userId", required = false) String targetUserId,
@@ -42,5 +42,24 @@ public class ScheduleController {
     ) {
         ScheduleResponseDto newSchedule = scheduleService.addSchedule(currentUser, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newSchedule);
+    }
+
+    @PutMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+            @AuthenticationPrincipal UserPrincipal currentUser,
+            @PathVariable Long scheduleId,
+            @RequestBody ScheduleRequestDto requestDto
+    ) {
+        ScheduleResponseDto updated = scheduleService.updateSchedule(currentUser, scheduleId, requestDto);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{scheduleId}")
+    public ResponseEntity<ScheduleResponseDto> deleteSchedule(
+            @AuthenticationPrincipal UserPrincipal currentUser,
+            @PathVariable Long scheduleId
+    ) {
+        ScheduleResponseDto deleted = scheduleService.deleteSchedule(currentUser, scheduleId);
+        return ResponseEntity.ok(deleted);
     }
 }
