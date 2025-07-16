@@ -24,6 +24,7 @@ public class Schedule {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isRepeating; // isRepeating 필드 추가
+    private String color;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

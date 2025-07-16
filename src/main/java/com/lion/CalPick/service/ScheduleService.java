@@ -85,6 +85,7 @@ public class ScheduleService {
         schedule.setEndTime(requestDto.getEndTime());
         schedule.setRepeating(requestDto.isRepeating());
         schedule.setUser(owner);
+        schedule.setColor(requestDto.getColor());
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(savedSchedule);
@@ -108,6 +109,7 @@ public class ScheduleService {
         updatedSchedule.setStartTime(requestDto.getStartTime());
         updatedSchedule.setEndTime(requestDto.getEndTime());
         updatedSchedule.setRepeating(requestDto.isRepeating());
+        updatedSchedule.setColor(requestDto.getColor());
 
 
         Schedule savedSchedule = scheduleRepository.save(updatedSchedule);
