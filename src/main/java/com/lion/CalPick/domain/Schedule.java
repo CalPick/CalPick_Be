@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "schedules")
@@ -21,8 +21,8 @@ public class Schedule {
 
     private String title;
     private String description;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private Instant startTime;
+    private Instant endTime;
     private boolean isRepeating; // isRepeating 필드 추가
 
     @ManyToOne(fetch = FetchType.LAZY)

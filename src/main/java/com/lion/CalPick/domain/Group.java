@@ -19,7 +19,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name="groups")
+@Table(name="group_table")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Group {

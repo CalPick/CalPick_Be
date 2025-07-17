@@ -4,15 +4,18 @@ import com.lion.CalPick.domain.UserPrincipal;
 import com.lion.CalPick.dto.ScheduleRequestDto;
 import com.lion.CalPick.dto.ScheduleResponseDto;
 import com.lion.CalPick.service.ScheduleService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/schedules/monthly")
+@RequestMapping("/api/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -21,7 +24,7 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @GetMapping
+    @GetMapping("/monthly")
     public ResponseEntity<List<ScheduleResponseDto>> getSchedules(
             @AuthenticationPrincipal UserPrincipal currentUser,
             @RequestParam(name = "userId", required = false) String targetUserId,
@@ -40,4 +43,5 @@ public class ScheduleController {
         ScheduleResponseDto newSchedule = scheduleService.addSchedule(currentUser, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newSchedule);
     }
+
 }
