@@ -18,7 +18,7 @@ public class ScheduleResponseDto {
     private String userId;
     private String nickname;
     private String color;
-
+  
     public ScheduleResponseDto(Schedule schedule) {
         this.id = schedule.getId();
         this.title = schedule.getTitle();

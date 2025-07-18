@@ -1,5 +1,6 @@
 package com.lion.CalPick.controller;
 
+import com.lion.CalPick.dto.CheckRequestDto;
 import com.lion.CalPick.dto.LoginRequest;
 import com.lion.CalPick.dto.LoginResponse;
 import com.lion.CalPick.dto.SignUpRequest;
@@ -39,6 +40,19 @@ public class AuthController {
             return ResponseEntity.ok(loginResponse);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("서버 오류가 발생했습니다."));
+        }
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<?> check(@RequestBody CheckRequestDto checkRequest) {
+        try {
+            authService.check(checkRequest);
+            return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("사용 가능한 아이디입니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("서버 오류가 발생했습니다."));

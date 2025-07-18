@@ -2,6 +2,7 @@ package com.lion.CalPick.service;
 
 import com.lion.CalPick.domain.User;
 import com.lion.CalPick.domain.UserPrincipal;
+import com.lion.CalPick.dto.CheckRequestDto;
 import com.lion.CalPick.dto.LoginRequest;
 import com.lion.CalPick.dto.LoginResponse;
 import com.lion.CalPick.dto.SignUpRequest;
@@ -44,6 +45,13 @@ public class AuthService {
         System.out.println(">> 생년월일 birthday-service2: " + user.getBirth());
 
         userRepository.save(user);
+    }
+
+    @Transactional
+    public void check(CheckRequestDto checkRequest) {
+        if (userRepository.existsByUserId(checkRequest.getUserId())) {
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        }
     }
 
     @Transactional
