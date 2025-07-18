@@ -59,9 +59,9 @@ public class SecurityConfig {
             .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/api/auth/**", "/actuator/**").permitAll()
+                .requestMatchers("/api/auth/**", "/actuator/**", "/health").permitAll()
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             );
             
 
