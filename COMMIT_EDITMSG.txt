@@ -1,1 +1,1 @@
-Update application.properties with content
+Resolve merge conflicts in Dockerfile and build.gradle
