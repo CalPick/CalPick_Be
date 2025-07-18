@@ -39,13 +39,14 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
+springBoot {
+	mainClass = 'com.lion.CalPick.CalPickApplication'
+}
+
+bootJar {
+	archiveFileName = "app.jar"
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
-bootJar {
-    archiveFileName = "app.jar"
-    manifest {
-        attributes 'Main-Class': 'com.lion.CalPick.CalPickApplication'
-    }
-}
-
