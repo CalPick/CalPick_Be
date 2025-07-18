@@ -16,4 +16,5 @@ COPY --from=build /home/gradle/project/build/libs/calpick-0.0.1-SNAPSHOT.jar app
 EXPOSE 8080
 
 # fat jar 실행
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar"]
+CMD ["app.jar"]
