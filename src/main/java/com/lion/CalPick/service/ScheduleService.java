@@ -113,7 +113,8 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
                         schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname()
+                        schedule.getUser().getNickname(),
+                        schedule.getColor()
                 ))
                 .collect(Collectors.toList());
     }
@@ -143,7 +144,8 @@ public class ScheduleService {
                 LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
                 savedSchedule.isRepeating(),
                 savedSchedule.getUser().getUserId(),
-                savedSchedule.getUser().getNickname()
+                savedSchedule.getUser().getNickname(),
+                savedSchedule.getColor()
         );
     }
 
@@ -267,7 +269,8 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
                         schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname()
+                        schedule.getUser().getNickname(),
+                        schedule.getColor()
                 ))
                 .collect(Collectors.toList());
     }
@@ -417,14 +420,25 @@ public class ScheduleService {
 
         updatedSchedule.setTitle(requestDto.getTitle());
         updatedSchedule.setDescription(requestDto.getDescription());
-        updatedSchedule.setStartTime(requestDto.getStartTime());
-        updatedSchedule.setEndTime(requestDto.getEndTime());
+        ZoneId kstZone = ZoneId.of("Asia/Seoul");
+        updatedSchedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
+        updatedSchedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         updatedSchedule.setRepeating(requestDto.isRepeating());
         updatedSchedule.setColor(requestDto.getColor());
 
 
         Schedule savedSchedule = scheduleRepository.save(updatedSchedule);
-        return new ScheduleResponseDto(savedSchedule);
+        return new ScheduleResponseDto(
+                savedSchedule.getId(),
+                savedSchedule.getTitle(),
+                savedSchedule.getDescription(),
+                LocalDateTime.ofInstant(savedSchedule.getStartTime(), kstZone),
+                LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
+                savedSchedule.isRepeating(),
+                savedSchedule.getUser().getUserId(),
+                savedSchedule.getUser().getNickname(),
+                savedSchedule.getColor()
+        );
     }
 
     @Transactional
