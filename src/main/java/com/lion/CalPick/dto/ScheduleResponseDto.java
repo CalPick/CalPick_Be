@@ -17,15 +17,17 @@ public class ScheduleResponseDto {
     private boolean isRepeating;
     private String userId;
     private String nickname;
-
-    public ScheduleResponseDto(Long id, String title, String description, LocalDateTime startTime, LocalDateTime endTime, boolean isRepeating, String userId, String nickname) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.isRepeating = isRepeating;
-        this.userId = userId;
-        this.nickname = nickname;
+    private String color;
+  
+    public ScheduleResponseDto(Schedule schedule) {
+        this.id = schedule.getId();
+        this.title = schedule.getTitle();
+        this.description = schedule.getDescription();
+        this.startTime = schedule.getStartTime();
+        this.endTime = schedule.getEndTime();
+        this.isRepeating = schedule.isRepeating();
+        this.userId = schedule.getUser().getUserId();
+        this.nickname = schedule.getUser().getNickname();
+        this.color = schedule.getColor();
     }
 }
