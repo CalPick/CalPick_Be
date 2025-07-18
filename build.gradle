@@ -42,3 +42,13 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+tasks.named('jar') {
+	// 'plain.jar' 중복 방지
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+	// jar 파일 이름을 app.jar로 고정
+	archiveBaseName.set("app")
+	archiveVersion.set("")
+	archiveClassifier.set("")
+}
+
