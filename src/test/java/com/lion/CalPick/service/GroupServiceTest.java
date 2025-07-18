@@ -58,17 +58,17 @@ public class GroupServiceTest {
         // given
         CreateGroupRequest request = new CreateGroupRequest("우아한 모각코", List.of("user2", "user3"));
 
-        given(userRepository.findByUserId("user1")).willReturn(Optional.of(requester));
-        given(userRepository.findByUserId("user2")).willReturn(Optional.of(member1));
-        given(userRepository.findByUserId("user3")).willReturn(Optional.of(member2));
-        given(userRepository.existsByUserId("user2")).willReturn(true); // Added existsByUserId for member validation
-        given(userRepository.existsByUserId("user3")).willReturn(true); // Added existsByUserId for member validation
+        lenient().when(userRepository.findByUserId("user1")).thenReturn(Optional.of(requester));
+        lenient().when(userRepository.findByUserId("user2")).thenReturn(Optional.of(member1));
+        lenient().when(userRepository.findByUserId("user3")).thenReturn(Optional.of(member2));
+        lenient().when(userRepository.existsByUserId("user2")).thenReturn(true); // Added existsByUserId for member validation
+        lenient().when(userRepository.existsByUserId("user3")).thenReturn(true); // Added existsByUserId for member validation
 
-        given(friendRepository.areFriends(requester, member1)).willReturn(true);
-        given(friendRepository.areFriends(requester, member2)).willReturn(true);
+        lenient().when(friendRepository.areFriends(requester, member1)).thenReturn(true);
+        lenient().when(friendRepository.areFriends(requester, member2)).thenReturn(true);
 
         ArgumentCaptor<Group> groupArgumentCaptor = ArgumentCaptor.forClass(Group.class);
-        given(groupRepository.save(any(Group.class))).willAnswer(invocation -> {
+        lenient().when(groupRepository.save(any(Group.class))).thenAnswer(invocation -> {
             Group group = invocation.getArgument(0);
             group.setId(1L);
             return group;
@@ -99,9 +99,9 @@ public class GroupServiceTest {
         // given
         CreateGroupRequest request = new CreateGroupRequest("테스트 그룹", List.of("user2", "user99"));
 
-        given(userRepository.findByUserId("user1")).willReturn(Optional.of(requester));
-        given(userRepository.existsByUserId("user2")).willReturn(true);
-        given(userRepository.existsByUserId("user99")).willReturn(false); // user99 does not exist
+        lenient().when(userRepository.findByUserId("user1")).thenReturn(Optional.of(requester));
+        lenient().when(userRepository.existsByUserId("user2")).thenReturn(true);
+        lenient().when(userRepository.existsByUserId("user99")).thenReturn(false); // user99 does not exist
 
         // when & then
         assertThatThrownBy(()->groupService.createGroup(request, "user1"))
@@ -114,7 +114,7 @@ public class GroupServiceTest {
         // given
         CreateGroupRequest request = new CreateGroupRequest("소규모 그룹", List.of()); // Only requester, 1 member
 
-        given(userRepository.findByUserId("user1")).willReturn(Optional.of(requester));
+        lenient().when(userRepository.findByUserId("user1")).thenReturn(Optional.of(requester));
 
         // when & then
         assertThatThrownBy(() -> groupService.createGroup(request, "user1"))
@@ -132,7 +132,7 @@ public class GroupServiceTest {
         }
         CreateGroupRequest request = new CreateGroupRequest("대규모 그룹", memberIds);
 
-        given(userRepository.findByUserId("user1")).willReturn(Optional.of(requester));
+        lenient().when(userRepository.findByUserId("user1")).thenReturn(Optional.of(requester));
 
         // when & then
         assertThatThrownBy(() -> groupService.createGroup(request, "user1"))
@@ -145,16 +145,16 @@ public class GroupServiceTest {
         // given
         CreateGroupRequest request = new CreateGroupRequest("친구 아닌 그룹", List.of("user2", "user3"));
 
-        given(userRepository.findByUserId("user1")).willReturn(Optional.of(requester));
+        lenient().when(userRepository.findByUserId("user1")).thenReturn(Optional.of(requester));
         lenient().when(userRepository.existsByUserId("user2")).thenReturn(true);
         lenient().when(userRepository.existsByUserId("user3")).thenReturn(true);
 
-        given(userRepository.findByUserId("user2")).willReturn(Optional.of(member1));
-        given(userRepository.findByUserId("user3")).willReturn(Optional.of(member2));
+        lenient().when(userRepository.findByUserId("user2")).thenReturn(Optional.of(member1));
+        lenient().when(userRepository.findByUserId("user3")).thenReturn(Optional.of(member2));
 
 
-        given(friendRepository.areFriends(requester, member1)).willReturn(false);
-        given(friendRepository.areFriends(requester, member2)).willReturn(true);
+        lenient().when(friendRepository.areFriends(requester, member1)).thenReturn(false);
+        lenient().when(friendRepository.areFriends(requester, member2)).thenReturn(true);
 
         // when & then
         assertThatThrownBy(() -> groupService.createGroup(request, "user1"))

@@ -40,10 +40,7 @@ public class SecurityConfig {
         return new JwtAuthenticationFilter(jwtTokenProvider, customUserDetailsService);
     }
 
-    @Bean
-    public DebugSecurityContextFilter debugSecurityContextFilter() {
-        return new DebugSecurityContextFilter();
-    }
+    
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -66,8 +63,8 @@ public class SecurityConfig {
                     .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 .anyRequest().authenticated()
             )
-            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
-            .addFilterAfter(debugSecurityContextFilter(), JwtAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            
 
         return http.build();
     }

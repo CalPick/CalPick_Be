@@ -29,6 +29,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -50,4 +51,7 @@ bootJar {
 
 tasks.named('test') {
 	useJUnitPlatform()
+	systemProperty 'spring.profiles.active', 'test'
+	systemProperty 'logging.level.org.springframework', 'DEBUG'
+	systemProperty 'logging.level.com.lion.CalPick', 'DEBUG'
 }
