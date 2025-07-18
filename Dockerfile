@@ -12,7 +12,7 @@ FROM eclipse-temurin:21-jdk
 WORKDIR /app
 
 # build/libs 아래 생성된 bootJar 결과물을 app.jar로 복사
-COPY --from=build /home/gradle/project/build/libs/calpick-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /home/gradle/project/build/libs/Calpick-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
