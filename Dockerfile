@@ -5,6 +5,7 @@ WORKDIR /home/gradle/project
 
 # 💡 핵심: bootJar 명령으로 fat jar 생성
 RUN gradle bootJar -x test
+RUN ls -l /home/gradle/project/build/libs/
 
 # --- 2단계: 실행 단계 ---
 FROM eclipse-temurin:21-jdk
@@ -16,4 +17,5 @@ COPY --from=build /home/gradle/project/build/libs/app.jar app.jar
 EXPOSE 8080
 
 # fat jar 실행
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar"]
+CMD ["app.jar"]
