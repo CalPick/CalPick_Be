@@ -146,6 +146,42 @@ public class ScheduleService {
         );
     }
 
+    
+
+    @Transactional
+    public ScheduleResponseDto updateSchedule(UserPrincipal currentUserPrincipal, Long scheduleId, ScheduleRequestDto requestDto) {
+        User owner = userService.findById(currentUserPrincipal.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found with id: " + scheduleId));
+
+        // Check if the current user is the owner of the schedule
+        if (!schedule.getUser().getId().equals(owner.getId())) {
+            throw new IllegalArgumentException("You are not authorized to update this schedule.");
+        }
+
+        ZoneId kstZone = ZoneId.of("Asia/Seoul");
+
+        schedule.setTitle(requestDto.getTitle());
+        schedule.setDescription(requestDto.getDescription());
+        schedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
+        schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
+        schedule.setRepeating(requestDto.isRepeating());
+
+        Schedule updatedSchedule = scheduleRepository.save(schedule);
+        return new ScheduleResponseDto(
+                updatedSchedule.getId(),
+                updatedSchedule.getTitle(),
+                updatedSchedule.getDescription(),
+                LocalDateTime.ofInstant(updatedSchedule.getStartTime(), kstZone),
+                LocalDateTime.ofInstant(updatedSchedule.getEndTime(), kstZone),
+                updatedSchedule.isRepeating(),
+                updatedSchedule.getUser().getUserId(),
+                updatedSchedule.getUser().getNickname()
+        );
+    }
+
     @Transactional(readOnly = true)
     public AvailableTimeResponseDto getAvailableTimeSlots(Long groupId, String dateString, UserPrincipal userPrincipal) {
         logger.info("getAvailableTimeSlots called for Group ID: {}, Date: {}", groupId, dateString);
@@ -399,6 +435,22 @@ public class ScheduleService {
                 .collect(Collectors.toList());
 
         return new GetTop3Response(groupId, topDateList);
+    }
+
+    @Transactional
+    public void deleteSchedule(UserPrincipal currentUserPrincipal, Long scheduleId) {
+        User owner = userService.findById(currentUserPrincipal.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new IllegalArgumentException("Schedule not found with id: " + scheduleId));
+
+        // Check if the current user is the owner of the schedule
+        if (!schedule.getUser().getId().equals(owner.getId())) {
+            throw new IllegalArgumentException("You are not authorized to delete this schedule.");
+        }
+
+        scheduleRepository.delete(schedule);
     }
 
     // For testing purposes or initial data setup

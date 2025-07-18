@@ -44,4 +44,23 @@ public class ScheduleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(newSchedule);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(
+            @AuthenticationPrincipal UserPrincipal currentUser,
+            @PathVariable Long id,
+            @RequestBody ScheduleRequestDto requestDto
+    ) {
+        ScheduleResponseDto updatedSchedule = scheduleService.updateSchedule(currentUser, id, requestDto);
+        return ResponseEntity.ok(updatedSchedule);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteSchedule(
+            @AuthenticationPrincipal UserPrincipal currentUser,
+            @PathVariable Long id
+    ) {
+        scheduleService.deleteSchedule(currentUser, id);
+        return ResponseEntity.noContent().build();
+    }
+
 }
