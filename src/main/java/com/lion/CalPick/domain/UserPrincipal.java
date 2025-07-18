@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -14,13 +15,15 @@ public class UserPrincipal implements UserDetails {
     private String userId;
     private String password;
     private String nickname;
+    private LocalDate birth;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrincipal(Long id, String userId, String password, String nickname, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrincipal(Long id, String userId, String password, String nickname, LocalDate birth, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.userId = userId;
         this.password = password;
         this.nickname = nickname;
+        this.birth = birth;
         this.authorities = authorities;
     }
 
@@ -32,6 +35,7 @@ public class UserPrincipal implements UserDetails {
                 user.getUserId(),
                 user.getPassword(),
                 user.getNickname(),
+                user.getBirth(),
                 authorities
         );
     }
@@ -42,6 +46,10 @@ public class UserPrincipal implements UserDetails {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public LocalDate getBirth() {
+        return birth;
     }
 
     @Override
@@ -92,3 +100,4 @@ public class UserPrincipal implements UserDetails {
         return Objects.hash(id);
     }
 }
+

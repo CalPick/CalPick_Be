@@ -113,8 +113,7 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
                         schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname(),
-                        schedule.getColor()
+                        schedule.getUser().getNickname()
                 ))
                 .collect(Collectors.toList());
     }
@@ -133,7 +132,6 @@ public class ScheduleService {
         schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         schedule.setRepeating(requestDto.isRepeating());
         schedule.setUser(owner);
-        schedule.setColor(requestDto.getColor());
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(
@@ -144,8 +142,7 @@ public class ScheduleService {
                 LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
                 savedSchedule.isRepeating(),
                 savedSchedule.getUser().getUserId(),
-                savedSchedule.getUser().getNickname(),
-                savedSchedule.getColor()
+                savedSchedule.getUser().getNickname()
         );
     }
 
@@ -269,8 +266,7 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
                         schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname(),
-                        schedule.getColor()
+                        schedule.getUser().getNickname()
                 ))
                 .collect(Collectors.toList());
     }
@@ -404,60 +400,6 @@ public class ScheduleService {
 
         return new GetTop3Response(groupId, topDateList);
     }
-
-    @Transactional
-    public ScheduleResponseDto updateSchedule(UserPrincipal currentUserPrincipal, Long scheduleId, ScheduleRequestDto requestDto) {
-        Schedule updatedSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        User owner = userService.findById(currentUserPrincipal.getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // 수정 권한 확인
-        if (!updatedSchedule.getUser().getId().equals(owner.getId())) {
-            throw new IllegalArgumentException("수정 권한이 없습니다.");
-        }
-
-        updatedSchedule.setTitle(requestDto.getTitle());
-        updatedSchedule.setDescription(requestDto.getDescription());
-        ZoneId kstZone = ZoneId.of("Asia/Seoul");
-        updatedSchedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
-        updatedSchedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
-        updatedSchedule.setRepeating(requestDto.isRepeating());
-        updatedSchedule.setColor(requestDto.getColor());
-
-
-        Schedule savedSchedule = scheduleRepository.save(updatedSchedule);
-        return new ScheduleResponseDto(
-                savedSchedule.getId(),
-                savedSchedule.getTitle(),
-                savedSchedule.getDescription(),
-                LocalDateTime.ofInstant(savedSchedule.getStartTime(), kstZone),
-                LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
-                savedSchedule.isRepeating(),
-                savedSchedule.getUser().getUserId(),
-                savedSchedule.getUser().getNickname(),
-                savedSchedule.getColor()
-        );
-    }
-
-    @Transactional
-    public ScheduleResponseDto deleteSchedule(UserPrincipal currentUserPrincipal, Long scheduleId) {
-        Schedule deletedSchedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        User owner = userService.findById(currentUserPrincipal.getId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        // 수정 권한 확인
-        if (!deletedSchedule.getUser().getId().equals(owner.getId())) {
-            throw new IllegalArgumentException("삭제 권한이 없습니다.");
-        }
-        ScheduleResponseDto deletedScheduleDto = new ScheduleResponseDto(deletedSchedule);
-        scheduleRepository.deleteById(scheduleId);
-        return deletedScheduleDto; // 삭제된 데이터 정보 반환
-    }
-
 
     // For testing purposes or initial data setup
     @Transactional
