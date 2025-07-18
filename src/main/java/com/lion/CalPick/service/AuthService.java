@@ -65,7 +65,7 @@ public class AuthService {
             );
             UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
             String accessToken = jwtTokenProvider.generateToken(userPrincipal.getUsername(), userPrincipal.getNickname());
-            return new LoginResponse(accessToken, userPrincipal.getNickname());
+            return new LoginResponse(accessToken, userPrincipal.getNickname(), userPrincipal.getBirth());
         } catch (AuthenticationException e) {
             throw new IllegalArgumentException("아이디 또는 비밀번호가 잘못되었습니다.");
         } catch (Exception e) {
