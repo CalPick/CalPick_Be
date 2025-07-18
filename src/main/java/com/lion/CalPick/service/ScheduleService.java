@@ -105,7 +105,16 @@ public class ScheduleService {
             logger.info("조회된 일정 - User: {}, Title: {}, Start: {}, End: {}", targetUser.getUserId(), schedule.getTitle(), schedule.getStartTime(), schedule.getEndTime());
         });
         return schedules.stream()
-                .map(schedule -> new ScheduleResponseDto(schedule))
+                .map(schedule -> new ScheduleResponseDto(
+                        schedule.getId(),
+                        schedule.getTitle(),
+                        schedule.getDescription(),
+                        LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
+                        LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
+                        schedule.isRepeating(),
+                        schedule.getUser().getUserId(),
+                        schedule.getUser().getNickname()
+                ))
                 .collect(Collectors.toList());
     }
 
@@ -250,7 +259,16 @@ public class ScheduleService {
 
         List<Schedule> schedules = scheduleRepository.findOverlappingSchedules(targetUser, dayStart, dayEnd);
         return schedules.stream()
-                .map(schedule -> new ScheduleResponseDto(schedule))
+                .map(schedule -> new ScheduleResponseDto(
+                        schedule.getId(),
+                        schedule.getTitle(),
+                        schedule.getDescription(),
+                        LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
+                        LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
+                        schedule.isRepeating(),
+                        schedule.getUser().getUserId(),
+                        schedule.getUser().getNickname()
+                ))
                 .collect(Collectors.toList());
     }
 
