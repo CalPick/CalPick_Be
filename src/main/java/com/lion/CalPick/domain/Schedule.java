@@ -20,7 +20,6 @@ public class Schedule {
     private Long id;
 
     private String title;
-    private String description;
     private Instant startTime;
     private Instant endTime;
     private boolean isRepeating; // isRepeating 필드 추가

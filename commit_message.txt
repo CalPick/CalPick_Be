@@ -1,1 +1,1 @@
-\"feat: Add schedule delete functionality and fix syntax errors\" 
+feat: 5179 포트 CORS 허용

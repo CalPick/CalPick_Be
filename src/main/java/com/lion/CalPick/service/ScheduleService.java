@@ -108,7 +108,6 @@ public class ScheduleService {
                 .map(schedule -> new ScheduleResponseDto(
                         schedule.getId(),
                         schedule.getTitle(),
-                        schedule.getDescription(),
                         LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
@@ -128,7 +127,7 @@ public class ScheduleService {
 
         Schedule schedule = new Schedule();
         schedule.setTitle(requestDto.getTitle());
-        schedule.setDescription(requestDto.getDescription());
+        
         schedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
         schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         schedule.setRepeating(requestDto.isRepeating());
@@ -139,7 +138,6 @@ public class ScheduleService {
         return new ScheduleResponseDto(
                 savedSchedule.getId(),
                 savedSchedule.getTitle(),
-                savedSchedule.getDescription(),
                 LocalDateTime.ofInstant(savedSchedule.getStartTime(), kstZone),
                 LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
                 savedSchedule.isRepeating(),
@@ -167,7 +165,7 @@ public class ScheduleService {
         ZoneId kstZone = ZoneId.of("Asia/Seoul");
 
         schedule.setTitle(requestDto.getTitle());
-        schedule.setDescription(requestDto.getDescription());
+        
         schedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
         schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         schedule.setRepeating(requestDto.isRepeating());
@@ -177,7 +175,6 @@ public class ScheduleService {
         return new ScheduleResponseDto(
                 updatedSchedule.getId(),
                 updatedSchedule.getTitle(),
-                updatedSchedule.getDescription(),
                 LocalDateTime.ofInstant(updatedSchedule.getStartTime(), kstZone),
                 LocalDateTime.ofInstant(updatedSchedule.getEndTime(), kstZone),
                 updatedSchedule.isRepeating(),
@@ -302,7 +299,6 @@ public class ScheduleService {
                 .map(schedule -> new ScheduleResponseDto(
                         schedule.getId(),
                         schedule.getTitle(),
-                        schedule.getDescription(),
                         LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),

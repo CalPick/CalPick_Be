@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 public class ScheduleResponseDto {
     private Long id;
     private String title;
-    private String description;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private boolean isRepeating;
@@ -19,10 +18,9 @@ public class ScheduleResponseDto {
     private String nickname;
     private String color;
 
-    public ScheduleResponseDto(Long id, String title, String description, LocalDateTime startTime, LocalDateTime endTime, boolean isRepeating, String userId, String nickname, String color) {
+    public ScheduleResponseDto(Long id, String title, LocalDateTime startTime, LocalDateTime endTime, boolean isRepeating, String userId, String nickname, String color) {
         this.id = id;
         this.title = title;
-        this.description = description;
         this.startTime = startTime;
         this.endTime = endTime;
         this.isRepeating = isRepeating;
