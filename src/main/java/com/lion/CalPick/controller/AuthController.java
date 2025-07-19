@@ -1,6 +1,6 @@
 package com.lion.CalPick.controller;
 
-import com.lion.CalPick.dto.CheckRequestDto;
+
 import com.lion.CalPick.dto.LoginRequest;
 import com.lion.CalPick.dto.LoginResponse;
 import com.lion.CalPick.dto.SignUpRequest;
@@ -47,9 +47,9 @@ public class AuthController {
     }
 
     @GetMapping("/check")
-    public ResponseEntity<?> check(@RequestBody CheckRequestDto checkRequest) {
+    public ResponseEntity<?> check(@RequestParam String userId) {
         try {
-            authService.check(checkRequest);
+            authService.check(userId);
             return ResponseEntity.status(HttpStatus.CREATED).body(new MessageResponse("사용 가능한 아이디입니다."));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ErrorResponse(e.getMessage()));

@@ -2,7 +2,7 @@ package com.lion.CalPick.service;
 
 import com.lion.CalPick.domain.User;
 import com.lion.CalPick.domain.UserPrincipal;
-import com.lion.CalPick.dto.CheckRequestDto;
+
 import com.lion.CalPick.dto.LoginRequest;
 import com.lion.CalPick.dto.LoginResponse;
 import com.lion.CalPick.dto.SignUpRequest;
@@ -48,8 +48,8 @@ public class AuthService {
     }
 
     @Transactional
-    public void check(CheckRequestDto checkRequest) {
-        if (userRepository.existsByUserId(checkRequest.getUserId())) {
+    public void check(String userId) {
+        if (userRepository.existsByUserId(userId)) {
             throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
         }
     }
