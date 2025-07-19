@@ -113,7 +113,8 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
                         schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname()
+                        schedule.getUser().getNickname(),
+                        schedule.getColor()
                 ))
                 .collect(Collectors.toList());
     }
@@ -132,6 +133,7 @@ public class ScheduleService {
         schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         schedule.setRepeating(requestDto.isRepeating());
         schedule.setUser(owner);
+        schedule.setColor(requestDto.getColor());
 
         Schedule savedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(
@@ -142,7 +144,8 @@ public class ScheduleService {
                 LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
                 savedSchedule.isRepeating(),
                 savedSchedule.getUser().getUserId(),
-                savedSchedule.getUser().getNickname()
+                savedSchedule.getUser().getNickname(),
+                savedSchedule.getColor()
         );
     }
 
@@ -168,6 +171,7 @@ public class ScheduleService {
         schedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
         schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         schedule.setRepeating(requestDto.isRepeating());
+        schedule.setColor(requestDto.getColor());
 
         Schedule updatedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(
@@ -178,7 +182,8 @@ public class ScheduleService {
                 LocalDateTime.ofInstant(updatedSchedule.getEndTime(), kstZone),
                 updatedSchedule.isRepeating(),
                 updatedSchedule.getUser().getUserId(),
-                updatedSchedule.getUser().getNickname()
+                updatedSchedule.getUser().getNickname(),
+                updatedSchedule.getColor()
         );
     }
 
@@ -302,7 +307,8 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
                         schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname()
+                        schedule.getUser().getNickname(),
+                        schedule.getColor()
                 ))
                 .collect(Collectors.toList());
     }

@@ -17,8 +17,9 @@ public class ScheduleResponseDto {
     private boolean isRepeating;
     private String userId;
     private String nickname;
+    private String color;
 
-    public ScheduleResponseDto(Long id, String title, String description, LocalDateTime startTime, LocalDateTime endTime, boolean isRepeating, String userId, String nickname) {
+    public ScheduleResponseDto(Long id, String title, String description, LocalDateTime startTime, LocalDateTime endTime, boolean isRepeating, String userId, String nickname, String color) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -27,5 +28,6 @@ public class ScheduleResponseDto {
         this.isRepeating = isRepeating;
         this.userId = userId;
         this.nickname = nickname;
+        this.color = color;
     }
 }
