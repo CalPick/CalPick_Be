@@ -1,1 +1,0 @@
-refactor: description 필드 제거
