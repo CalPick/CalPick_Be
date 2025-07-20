@@ -1,14 +1,11 @@
 package com.lion.CalPick.service;
 
-import com.lion.CalPick.domain.FriendStatus;
-import com.lion.CalPick.domain.Group;
-import com.lion.CalPick.domain.GroupMember;
-import com.lion.CalPick.domain.User;
+import com.lion.CalPick.domain.*;
 import com.lion.CalPick.dto.CreateGroupRequest;
 import com.lion.CalPick.dto.CreateGroupResponse;
-import com.lion.CalPick.repository.FriendRepository;
-import com.lion.CalPick.repository.GroupRepository;
-import com.lion.CalPick.repository.UserRepository;
+import com.lion.CalPick.dto.GroupResponseDto;
+import com.lion.CalPick.repository.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +22,9 @@ public class GroupService {
     private final GroupRepository groupRepository;
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final UserService userService;
+    private final GroupMemberRepository groupMemberRepository;
 
     private static final int MIN_GROUP_MEMBERS = 3;
     private static final int MAX_GROUP_MEMBERS = 12;
@@ -78,4 +78,34 @@ public class GroupService {
 
         return new CreateGroupResponse(group.getId(), group.getGroupName(), group.getCreateAt());
     }
+
+    @Transactional(readOnly = true)
+    public List<GroupResponseDto> getGroupList(String userId, UserPrincipal currentUser) {
+        User owner = userService.findById(currentUser.getId())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (!userId.equals(owner.getUserId())) {
+            throw new IllegalArgumentException("You are not authorized to access this resource.");
+        }
+
+        // 1. 해당 유저가 속한 모든 GroupMember 엔티티 조회
+        List<GroupMember> groupMembers = groupMemberRepository.findByUser_UserId(userId);
+
+        // 2. 그룹 ID 기준으로 중복 제거된 Group 리스트 추출
+        return groupMembers.stream()
+                .map(GroupMember::getGroup)
+                .distinct()
+                .map(group -> {
+                    int memberCount = groupMemberRepository.countByGroup_Id(group.getId()); // ✅ 멤버 수 조회
+                    return new GroupResponseDto(
+                            group.getId(),
+                            group.getGroupName(),
+                            memberCount,
+                            group.getCreateAt()
+                    );
+                })
+                .collect(Collectors.toList());
+    }
+
+
 }

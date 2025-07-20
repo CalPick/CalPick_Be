@@ -1,13 +1,11 @@
 package com.lion.CalPick.service;
-import com.lion.CalPick.domain.GroupMember;
-import com.lion.CalPick.domain.Schedule;
-import com.lion.CalPick.domain.User;
-import com.lion.CalPick.domain.UserPrincipal;
+import com.lion.CalPick.domain.*;
 import com.lion.CalPick.dto.GetTop3Response;
 import com.lion.CalPick.dto.ScheduleRequestDto;
 import com.lion.CalPick.dto.ScheduleResponseDto;
 import com.lion.CalPick.dto.AvailableTimeResponseDto;
 import com.lion.CalPick.repository.GroupMemberRepository;
+import com.lion.CalPick.repository.repeatingScheduleRepository;
 import com.lion.CalPick.repository.ScheduleRepository;
 import com.lion.CalPick.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -35,13 +33,15 @@ public class ScheduleService {
     private final FriendService friendService;
     private final UserRepository userRepository;
     private final GroupMemberRepository groupMemberRepository;
+    private final repeatingScheduleRepository RepeatingScheduleRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, UserService userService, FriendService friendService, UserRepository userRepository, GroupMemberRepository groupMemberRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, UserService userService, FriendService friendService, UserRepository userRepository, GroupMemberRepository groupMemberRepository, repeatingScheduleRepository RepeatingScheduleRepository) {
         this.scheduleRepository = scheduleRepository;
         this.userService = userService;
         this.friendService = friendService;
         this.userRepository = userRepository;
         this.groupMemberRepository = groupMemberRepository;
+        this.RepeatingScheduleRepository = RepeatingScheduleRepository;
     }
 
     //일정을 블록화
@@ -94,7 +94,6 @@ public class ScheduleService {
 
             // 친구 관계 검증
             if (!friendService.areFriends(currentUser, targetUser)) {
-                logger.warn("Attempt to access another user's schedule without friend validation. Current User ID: {}, Requested User ID: {}", currentUser.getUserId(), targetUser.getUserId());
                 throw new IllegalArgumentException("해당 사용자의 일정에 접근할 수 없습니다.");
             }
             logger.info("Target user is a friend. User ID: {}", targetUser.getUserId());
@@ -111,9 +110,8 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
-                        schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname(),
-                        schedule.getColor()
+                        schedule.getColor(),
+                        schedule.getRepeatingId()
                 ))
                 .collect(Collectors.toList());
     }
@@ -122,7 +120,7 @@ public class ScheduleService {
     public ScheduleResponseDto addSchedule(UserPrincipal currentUserPrincipal, ScheduleRequestDto requestDto) {
         User owner = userService.findById(currentUserPrincipal.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
+        logger.info("여기까지 진입성공2");
         ZoneId kstZone = ZoneId.of("Asia/Seoul");
 
         Schedule schedule = new Schedule();
@@ -133,17 +131,31 @@ public class ScheduleService {
         schedule.setRepeating(requestDto.isRepeating());
         schedule.setUser(owner);
         schedule.setColor(requestDto.getColor());
+        logger.info("여기까지 진입성공3");
 
+        // ✅ 1. repeating이 true이면 먼저 RepeatingSchedule 저장
+        if (requestDto.isRepeating()) {
+            logger.info("여기까지 진입성공4");
+            RepeatingSchedule repeatingSchedule = new RepeatingSchedule();
+            logger.info("여기까지 진입성공5");
+            
+            RepeatingSchedule savedRepeating = RepeatingScheduleRepository.save(repeatingSchedule);
+            Long repeatedId = savedRepeating.getId();
+            schedule.setRepeatingId(savedRepeating.getId());
+            logger.info("여기까지 진입성공7");
+
+        }
+        logger.info("여기까지 진입성공6");
         Schedule savedSchedule = scheduleRepository.save(schedule);
+
         return new ScheduleResponseDto(
                 savedSchedule.getId(),
                 savedSchedule.getTitle(),
-                LocalDateTime.ofInstant(savedSchedule.getStartTime(), kstZone),
-                LocalDateTime.ofInstant(savedSchedule.getEndTime(), kstZone),
+                LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
+                LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                 savedSchedule.isRepeating(),
-                savedSchedule.getUser().getUserId(),
-                savedSchedule.getUser().getNickname(),
-                savedSchedule.getColor()
+                savedSchedule.getColor(),
+                savedSchedule.getRepeatingId()
         );
     }
 
@@ -178,9 +190,8 @@ public class ScheduleService {
                 LocalDateTime.ofInstant(updatedSchedule.getStartTime(), kstZone),
                 LocalDateTime.ofInstant(updatedSchedule.getEndTime(), kstZone),
                 updatedSchedule.isRepeating(),
-                updatedSchedule.getUser().getUserId(),
-                updatedSchedule.getUser().getNickname(),
-                updatedSchedule.getColor()
+                updatedSchedule.getColor(),
+                updatedSchedule.getRepeatingId()
         );
     }
 
@@ -302,9 +313,9 @@ public class ScheduleService {
                         LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
                         LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
                         schedule.isRepeating(),
-                        schedule.getUser().getUserId(),
-                        schedule.getUser().getNickname(),
-                        schedule.getColor()
+                        schedule.getColor(),     // 6번째: 색상
+
+                        schedule.getRepeatingId()
                 ))
                 .collect(Collectors.toList());
     }

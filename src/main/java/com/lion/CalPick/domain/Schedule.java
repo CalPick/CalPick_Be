@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+
 
 import java.time.Instant;
 
@@ -13,7 +13,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+
 public class Schedule {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,8 +22,10 @@ public class Schedule {
     private String title;
     private Instant startTime;
     private Instant endTime;
-    private boolean isRepeating; // isRepeating 필드 추가
+    @Column(nullable = false)
+    private boolean repeating = false;
     private String color;
+    private Long repeatingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

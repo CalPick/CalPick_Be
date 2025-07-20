@@ -13,13 +13,14 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/api/schedules")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-
+    private static final Logger logger = LoggerFactory.getLogger(ScheduleController.class);
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
@@ -40,6 +41,7 @@ public class ScheduleController {
             @AuthenticationPrincipal UserPrincipal currentUser,
             @RequestBody ScheduleRequestDto requestDto
     ) {
+        logger.info("여기까지 진입성공");
         ScheduleResponseDto newSchedule = scheduleService.addSchedule(currentUser, requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newSchedule);
     }

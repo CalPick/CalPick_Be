@@ -13,19 +13,18 @@ public class ScheduleResponseDto {
     private String title;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private boolean isRepeating;
-    private String userId;
-    private String nickname;
+    private boolean repeating;
     private String color;
+    
+    private Long repeatingId;
 
-    public ScheduleResponseDto(Long id, String title, LocalDateTime startTime, LocalDateTime endTime, boolean isRepeating, String userId, String nickname, String color) {
+    public ScheduleResponseDto(Long id, String title, LocalDateTime startTime, LocalDateTime endTime, boolean repeating,  String color, Long repeatingId) {
         this.id = id;
         this.title = title;
         this.startTime = startTime;
         this.endTime = endTime;
-        this.isRepeating = isRepeating;
-        this.userId = userId;
-        this.nickname = nickname;
+        this.repeating = repeating;
         this.color = color;
+        this.repeatingId = repeatingId;
     }
 }

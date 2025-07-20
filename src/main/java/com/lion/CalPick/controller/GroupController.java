@@ -1,16 +1,15 @@
 package com.lion.CalPick.controller;
 
 import com.lion.CalPick.domain.UserPrincipal;
-import com.lion.CalPick.dto.CreateGroupRequest;
-import com.lion.CalPick.dto.CreateGroupResponse;
-import com.lion.CalPick.dto.GetTop3Response;
-import com.lion.CalPick.dto.AvailableTimeResponseDto;
+import com.lion.CalPick.dto.*;
 import com.lion.CalPick.service.GroupService;
 import com.lion.CalPick.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/groups")
@@ -48,6 +47,16 @@ public class GroupController {
             @RequestParam String date
     ) {
         AvailableTimeResponseDto response = scheduleService.getAvailableTimeSlots(groupId, date, currentUser);
+        return ResponseEntity.ok(response);
+    }
+
+    //그룹목록조회 /api/groups/{userId}
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<GroupResponseDto>> getGroupList(
+            @AuthenticationPrincipal UserPrincipal currentUser,
+            @PathVariable String userId
+    ) {
+        List<GroupResponseDto> response = groupService.getGroupList(userId, currentUser);
         return ResponseEntity.ok(response);
     }
 }
