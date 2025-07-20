@@ -1,0 +1,4 @@
+fix: Re-track application.properties and update .gitignore
+
+- Removed application.properties from .gitignore to re-track it.
+- Added application.properties back to Git tracking.
