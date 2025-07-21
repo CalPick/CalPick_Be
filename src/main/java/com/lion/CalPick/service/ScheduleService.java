@@ -5,7 +5,6 @@ import com.lion.CalPick.dto.ScheduleRequestDto;
 import com.lion.CalPick.dto.ScheduleResponseDto;
 import com.lion.CalPick.dto.AvailableTimeResponseDto;
 import com.lion.CalPick.repository.GroupMemberRepository;
-import com.lion.CalPick.repository.repeatingScheduleRepository;
 import com.lion.CalPick.repository.ScheduleRepository;
 import com.lion.CalPick.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -33,15 +32,13 @@ public class ScheduleService {
     private final FriendService friendService;
     private final UserRepository userRepository;
     private final GroupMemberRepository groupMemberRepository;
-    private final repeatingScheduleRepository RepeatingScheduleRepository;
 
-    public ScheduleService(ScheduleRepository scheduleRepository, UserService userService, FriendService friendService, UserRepository userRepository, GroupMemberRepository groupMemberRepository, repeatingScheduleRepository RepeatingScheduleRepository) {
+    public ScheduleService(ScheduleRepository scheduleRepository, UserService userService, FriendService friendService, UserRepository userRepository, GroupMemberRepository groupMemberRepository) {
         this.scheduleRepository = scheduleRepository;
         this.userService = userService;
         this.friendService = friendService;
         this.userRepository = userRepository;
         this.groupMemberRepository = groupMemberRepository;
-        this.RepeatingScheduleRepository = RepeatingScheduleRepository;
     }
 
     //일정을 블록화
@@ -133,18 +130,9 @@ public class ScheduleService {
         schedule.setColor(requestDto.getColor());
         logger.info("여기까지 진입성공3");
 
-        // ✅ 1. repeating이 true이면 먼저 RepeatingSchedule 저장
-        if (requestDto.isRepeating()) {
-            logger.info("여기까지 진입성공4");
-            RepeatingSchedule repeatingSchedule = new RepeatingSchedule();
-            logger.info("여기까지 진입성공5");
-            
-            RepeatingSchedule savedRepeating = RepeatingScheduleRepository.save(repeatingSchedule);
-            Long repeatedId = savedRepeating.getId();
-            schedule.setRepeatingId(savedRepeating.getId());
-            logger.info("여기까지 진입성공7");
-
-        }
+        // repeatingId를 직접 설정
+        schedule.setRepeatingId(requestDto.getRepeatingId());
+        
         logger.info("여기까지 진입성공6");
         Schedule savedSchedule = scheduleRepository.save(schedule);
 
@@ -182,6 +170,7 @@ public class ScheduleService {
         schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
         schedule.setRepeating(requestDto.isRepeating());
         schedule.setColor(requestDto.getColor());
+        schedule.setRepeatingId(requestDto.getRepeatingId()); // Add this line to update repeatingId
 
         Schedule updatedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(

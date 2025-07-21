@@ -14,5 +14,5 @@ public class ScheduleRequestDto {
     private boolean repeating;
     private String color;
     
-    private Long repeatingId;
+    private String repeatingId;
 }

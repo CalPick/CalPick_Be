@@ -16,9 +16,9 @@ public class ScheduleResponseDto {
     private boolean repeating;
     private String color;
     
-    private Long repeatingId;
+    private String repeatingId;
 
-    public ScheduleResponseDto(Long id, String title, LocalDateTime startTime, LocalDateTime endTime, boolean repeating,  String color, Long repeatingId) {
+    public ScheduleResponseDto(Long id, String title, LocalDateTime startTime, LocalDateTime endTime, boolean repeating,  String color, String repeatingId) {
         this.id = id;
         this.title = title;
         this.startTime = startTime;

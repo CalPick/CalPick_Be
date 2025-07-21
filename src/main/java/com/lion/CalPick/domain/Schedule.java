@@ -25,7 +25,8 @@ public class Schedule {
     @Column(nullable = false)
     private boolean repeating = false;
     private String color;
-    private Long repeatingId;
+    @Column(unique = true)
+    private String repeatingId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
