@@ -114,37 +114,51 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleResponseDto addSchedule(UserPrincipal currentUserPrincipal, ScheduleRequestDto requestDto) {
+    public List<ScheduleResponseDto> addSchedule(UserPrincipal currentUserPrincipal, List<ScheduleRequestDto> requestDtos) {
         User owner = userService.findById(currentUserPrincipal.getId())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
         logger.info("여기까지 진입성공2");
         ZoneId kstZone = ZoneId.of("Asia/Seoul");
 
-        Schedule schedule = new Schedule();
-        schedule.setTitle(requestDto.getTitle());
-        
-        schedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
-        schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
-        schedule.setRepeating(requestDto.isRepeating());
-        schedule.setUser(owner);
-        schedule.setColor(requestDto.getColor());
-        logger.info("여기까지 진입성공3");
+        if (requestDtos.isEmpty()) {
+            throw new IllegalArgumentException("요청된 일정이 없습니다.");
+        }
 
-        // repeatingId를 직접 설정
-        schedule.setRepeatingId(requestDto.getRepeatingId());
-        
-        logger.info("여기까지 진입성공6");
-        Schedule savedSchedule = scheduleRepository.save(schedule);
+        // 첫 번째 DTO에서 repeatingId를 가져와서 고유성 검증
+        String repeatingId = requestDtos.get(0).getRepeatingId();
+        if (repeatingId != null && scheduleRepository.existsByRepeatingId(repeatingId)) {
+            throw new IllegalArgumentException("이미 존재하는 repeatingId 입니다: " + repeatingId);
+        }
 
-        return new ScheduleResponseDto(
-                savedSchedule.getId(),
-                savedSchedule.getTitle(),
-                LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
-                LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
-                savedSchedule.isRepeating(),
-                savedSchedule.getColor(),
-                savedSchedule.getRepeatingId()
-        );
+        List<ScheduleResponseDto> newSchedules = new ArrayList<>();
+        for (ScheduleRequestDto requestDto : requestDtos) {
+            Schedule schedule = new Schedule();
+            schedule.setTitle(requestDto.getTitle());
+            
+            schedule.setStartTime(requestDto.getStartTime().atZone(kstZone).toInstant());
+            schedule.setEndTime(requestDto.getEndTime().atZone(kstZone).toInstant());
+            schedule.setRepeating(requestDto.isRepeating());
+            schedule.setUser(owner);
+            schedule.setColor(requestDto.getColor());
+            logger.info("여기까지 진입성공3");
+
+            // repeatingId를 직접 설정
+            schedule.setRepeatingId(requestDto.getRepeatingId());
+            
+            logger.info("여기까지 진입성공6");
+            Schedule savedSchedule = scheduleRepository.save(schedule);
+
+            newSchedules.add(new ScheduleResponseDto(
+                    savedSchedule.getId(),
+                    savedSchedule.getTitle(),
+                    LocalDateTime.ofInstant(schedule.getStartTime(), kstZone),
+                    LocalDateTime.ofInstant(schedule.getEndTime(), kstZone),
+                    savedSchedule.isRepeating(),
+                    savedSchedule.getColor(),
+                    savedSchedule.getRepeatingId()
+            ));
+        }
+        return newSchedules;
     }
 
     

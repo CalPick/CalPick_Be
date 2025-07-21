@@ -13,4 +13,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     @Query("SELECT s FROM Schedule s WHERE s.user = :user AND s.endTime >= :monthStart AND s.startTime <= :monthEnd")
     List<Schedule> findOverlappingSchedules(@Param("user") User user, @Param("monthStart") Instant monthStart, @Param("monthEnd") Instant monthEnd);
 
+    boolean existsByRepeatingId(String repeatingId);
+
 }

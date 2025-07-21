@@ -37,13 +37,13 @@ public class ScheduleController {
     }
 
     @PostMapping
-    public ResponseEntity<ScheduleResponseDto> addSchedule(
+    public ResponseEntity<List<ScheduleResponseDto>> addSchedule(
             @AuthenticationPrincipal UserPrincipal currentUser,
-            @RequestBody ScheduleRequestDto requestDto
+            @RequestBody List<ScheduleRequestDto> requestDtos
     ) {
         logger.info("여기까지 진입성공");
-        ScheduleResponseDto newSchedule = scheduleService.addSchedule(currentUser, requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(newSchedule);
+        List<ScheduleResponseDto> newSchedules = scheduleService.addSchedule(currentUser, requestDtos);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newSchedules);
     }
 
     @PutMapping("/{id}")

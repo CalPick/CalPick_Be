@@ -1,4 +1,1 @@
-fix: Re-track application.properties and update .gitignore
-
-- Removed application.properties from .gitignore to re-track it.
-- Added application.properties back to Git tracking.
+Feat: repeatingId String 타입으로 변경 및 RepeatingSchedule 로직 제거
